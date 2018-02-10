@@ -1,11 +1,19 @@
+from Node import Node
+from Leaf import Leaf
 from Example import Example
+from UtilityFunctions import *
 
 class DecisionTree():
 
-    def __init__(self, newDepth):
+    def __init__(self, newDepth, attributeList):
         self.maxDepth = newDepth
+        self.rootNode = Node()
+        self.attributeList = attributeList
 
-    def ID3(self, s, attribute, label):
+    def buildTree(self, s, alg):
+        self.rootNode = self.ID3(0, s, None, None, alg)
+
+    def ID3(self, depth, s, attribute = None, label = None, alg = 'info'):
         '''
 
         :param s: set of examples
@@ -14,17 +22,41 @@ class DecisionTree():
         :return:
         '''
 
-        allLabelsMatch = doAllLabelsMatch(s)
+        if(depth == self.maxDepth):
+            return Leaf(self.getMostCommonLabel(s))
+
+        allLabelsMatch = self.doAllLabelsMatch(s)
         if allLabelsMatch == True:
+            label = s[0].getLabel()
             if label is not None:
-                return Leaf(label,parent)
+                return Leaf(label)
             else:
                 # Most common label
                 mostCommonLabel = self.getMostCommonLabel(s)
-                return Leaf(mostCommonLabel, parent)
+                return Leaf(mostCommonLabel)
         else:
-            newNode = Node(parent)
+            newNode = Node()
+
             # Find an attribute that best splits the data using information gain
+            (bestAttributeIndex, __) = self.findBestAttribute(s, alg)
+            bestAttribute = self.attributeList[bestAttributeIndex]
+            newNode.splittingAttr = bestAttributeIndex
+            #attrDict = getTypeCountDict(s,bestAttributeIndex)
+            for value in bestAttribute.values:
+                #subsets.append(getExampleSubset(s, bestAttributeIndex, value))
+                subset = getExampleSubset(s, bestAttributeIndex, value)
+                if len(subset) > 0:
+                    newNode.children[value] = self.ID3(depth+1,subset,None,None,alg)
+                else:
+                    mostCommonLabel = self.getMostCommonLabel(s)
+                    newNode.children[value] = Leaf(mostCommonLabel)
+
+            #for subset in subsets:
+            #    newNode.children.append(self.ID3(subset,None,None,alg))
+
+            return newNode
+
+            # Create a subset for each attribute value for the best attribute
 
             '''
             1. Create a Root node for tree
@@ -38,7 +70,7 @@ class DecisionTree():
                     below this branch add the subtree ID3(Sv, Attributes -{A}, Label)
                 4. Return Root node
             '''
-            print "nothing"
+
 
     # This function checks to see if all of the labels within the example set match
     def doAllLabelsMatch(self, s):
@@ -52,13 +84,7 @@ class DecisionTree():
 
     # This function returns the most common lable from the set of examples s
     def getMostCommonLabel(self, s):
-        labelDict = {}
-        for example in s:
-            label = example.getLabel()
-            if label in labelDict:
-                labelDict[label] += 1
-            else:
-                labelDict[label] = 1
+        labelDict = getTypeCountDict(s, 'label')
 
         maxLabelNum = 0
         for entry in labelDict:
@@ -68,36 +94,37 @@ class DecisionTree():
         return greatestLabel
 
 
-    def findBestAttribute:
+    # This function find the best attribute to split the tree node on and returns the tuple (attr, infoGain)
+    def findBestAttribute(self, s, algorithm):
+        if algorithm == 'majority':
+            majorityErrors = getMajoirtyErrors(s)
+            minError = 1
+            minAttribute = 0
 
-    def calcInformationGain(self,s,a):
-        '''
+            for x in range(0, s[0].getNumAttributes()):
+                if majorityErrors[x] < minError:
+                    minError = majorityErrors[x]
+                    minAttribute = x
 
-        :param s: set of examples
-        :param a: attribute
-        :return: information gain
-        '''
+            return (minAttribute, minError)
 
-        # Gain = Entropy(S) - sum((|Sv|/|S|)*Entropy(Sv))
-        # Sv is the subset of examples weher the value of attribute A is set to value v
+        else:
+            infoGains = getInfoGains(s)
+            maxGain = infoGains[0]
+            maxAttribute = 0
 
-    def calcEntropy(self, s, specifiedAttribute):
+            # Loop through the info gains, looking for the maximum value
+            for x in range(0, s[0].getNumAttributes()):
+                if infoGains[x] > maxGain:
+                    maxGain = infoGains[x]
+                    maxAttribute = x
 
-        # Entropy(S) = H(S) = -p+log(p+) - p- log(p-)
-        # The entropy of an attribute is the sum of the entropy of each of its labels multiplied by the probability of getting that attribute in the first place
-
-        # Iterate through the set of examples, getting all the potential values for that attribute and the count for each one in the set
-        # Also, be sure to get the total number of examples so that we can get our probability
-        # For each Attribute value in our map:
-            # Calculate its Hs and store it in a list
-        # Sum the elements of the list to get the expected entropy.
-        # Get Hs for the label
+            return (maxAttribute, maxGain)
 
 
+    def predict(self, attributes):
+        return self.rootNode.prediction(attributes)
 
-
-    def getHs(self, probSet):
-        Hs = 0
-        for probability in probSet:
-            Hs = Hs - (probability) * log(probability)
-        return Hs
+    # Currently doesn't work the way I want yet...
+    def printTree(self):
+        print self.rootNode.printNode()

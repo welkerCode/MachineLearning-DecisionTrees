@@ -6,16 +6,11 @@ import xlrd
 class Attributes:
 
     def __init__(self):
-        self.inputs = []
-        self.output = None
+        self.values = []
 
-    def addInput(self, newInput):
-        self.inputs.append(newInput)
+    def addValue(self, newValue):
+        if self.values.count(newValue) == 0:
+            self.values.append(newValue)
 
-
-    def parseInputs(self, workbook_file, row_index):
-        workbook = xlrd.open_workbook(workbook_file, row_index)
-        worksheet = workbook.sheet_by_index(0)
-        for i in range(0,worksheet.row_len(row_index)-1):
-            self.inputs.append(worksheet.cell(row_index, i))
-        self.output = worksheet.cell(row_index, worksheet.row_len(row_index)-1)
+    def getValues(self):
+        return self.values

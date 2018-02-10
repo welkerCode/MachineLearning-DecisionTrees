@@ -1,7 +1,9 @@
+import csv
 import xlrd
 from Example import Example
 from Dataset import Dataset
 from DecisionTree import DecisionTree
+from UtilityFunctions import *
 
 # This function simply tests whether or not we can find the most common label in a set of examples
 def testMostCommonLabel(dataset):
@@ -9,11 +11,76 @@ def testMostCommonLabel(dataset):
     label = newDT.getMostCommonLabel(dataset.getExampleList())
     print "This is the most common label in the dataset: ", label
 
-def main(filename):
-    dataset = Dataset(filename)
-    dataset.parseDatasheet()
-    testMostCommonLabel(dataset)
-    print("Done")
+def main(training_filename, test_filename, output_file, data_type):
+    allDepthErrors = {}
+    for x in range(1, 8):
+        listOfErrors = testTreeDepth(training_filename, test_filename, x, data_type)
 
+        allDepthErrors[x] =
 
-main('dt_data.xls')
+    with open(output_file, 'wb') as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
+
+        for iteration in allDepthErrors:
+            row = allDepthErrors[iteration]
+            writer.writerow(row)
+    print "Done"
+
+def testTreeDepth(training_filename, test_filename, max_depth, data_type):
+    # Create datasets for the training and testing files
+    trainingDataset = Dataset(training_filename)
+    testingDataset = Dataset(test_filename)
+
+    # Parse the data according to the type specified by 'data_type'
+    if data_type == 'xls':
+        trainingDataset.parseDatasheet()
+        testingDataset.parseDatasheet()
+
+    else:
+        trainingDataset.parseCSV()
+        testingDataset.parseCSV()
+
+    # Additional Setup
+    trainingDataset.createAttributeList()
+    testingDataset.createAttributeList()
+
+    # Finally, create the Decision Trees (one for each algorithm) specified by max_depth
+    DT_info = DecisionTree(max_depth, trainingDataset.getAttributeList())
+    DT_majority = DecisionTree(max_depth, trainingDataset.getAttributeList())
+    DT_info.buildTree(trainingDataset.getExampleList(), 'info')
+    DT_majority.buildTree(trainingDataset.getExampleList(), 'majority')
+
+    '''
+    Here, we calculate the following errors at this depth:
+    Training Error: Info
+    Training Error: Majority
+    Testing Error: Info
+    Testing Error: Majoirty
+    '''
+
+    errorValues = []
+    errorValues.append(getError(DT_info,trainingDataset))
+    errorValues.append(getError(DT_info, testingDataset))
+    errorValues.append(getError(DT_majority,trainingDataset))
+    errorValues.append(getError(DT_majority,testingDataset))
+
+    return errorValues
+
+    #print getInfoGains(dataset.getExampleList())
+    #print("Done")
+
+def getError(tree, dataset):
+    totalTrials = len(dataset.getExampleList())
+    numIncorrect = 0
+    for example in dataset.getExampleList():
+        correctPred = example.getLabel()
+        treePred = tree.predict(example.getAttributes())
+
+        if correctPred != treePred:
+            numIncorrect += 1
+
+    return float(numIncorrect)/float(totalTrials)
+
+#main('dt_data.xls')
+#main('shape_color.xls', 'shape_color.xls', 'xls')
+main('train.csv','test.csv','output.csv','csv')
