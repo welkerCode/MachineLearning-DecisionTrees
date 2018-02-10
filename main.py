@@ -15,12 +15,19 @@ def main(training_filename, test_filename, output_file, data_type):
     allDepthErrors = {}
     for x in range(1, 8):
         listOfErrors = testTreeDepth(training_filename, test_filename, x, data_type)
+        listOfErrors.append((listOfErrors[0] + listOfErrors[2])/2) # averageTrainingErr
+        listOfErrors.append((listOfErrors[1] + listOfErrors[3])/2) # averageTestingErr
+        listOfErrors.append((listOfErrors[0] + listOfErrors[1])/2) # averageInfoGainErr
+        listOfErrors.append((listOfErrors[2] + listOfErrors[3])/2) # averageMajorityErr
+        listOfErrors.append((listOfErrors[0] + listOfErrors[1] + listOfErrors[2] + listOfErrors[3]) / 4)  # averageTreeDepthError
+        listOfErrors.insert(0,x)
+        allDepthErrors[x] = listOfErrors
 
-        allDepthErrors[x] =
+    dataLabels = ["depth", "Info Gain Training Err", "Info Gain Testing Err", "Majority Error Training Err", "Majority Error Testing Err", "Average Training Err", "Average Testing Err", "Average Info Gain Err", "Average Majority Error Err", "Average Tree Depth Err"]
 
     with open(output_file, 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
-
+        writer.writerow(dataLabels)
         for iteration in allDepthErrors:
             row = allDepthErrors[iteration]
             writer.writerow(row)
