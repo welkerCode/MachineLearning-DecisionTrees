@@ -35,3 +35,5 @@ output.csv - where the data from running main.py goes
 This data was tested on the datasets found in section 1 of the homework as well as the colored shapes dataset from the slides.  After making the trees by hand (testing the info gain on each of them, and the majority error on the first), I believe that they are working as intended.  Therefore, I am fairly confident that the error values being returned from the train.csv and test.csv files are accurate.
 
 However, don't try to use the 'printTree' function...it doesn't work as I intended it to.  Simply use the data as provided.  If you wish to examine the tree structure, you will have to use a debugging tool and look at the children of the root node, and their children, and so on and so forth.
+
+ALSO...apparently the CADE machines don't support import xldr.  So simply ignore any files having to do with .xls, and don't uncomment anything...I had to manually remove the additional functionality that my program provided in order to please the CADE overlords...if you can't tell, I was pretty frustrated with this...stupid CADE machines...

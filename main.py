@@ -1,5 +1,5 @@
+#import xlrd
 import csv
-import xlrd
 from Example import Example
 from Dataset import Dataset
 from DecisionTree import DecisionTree

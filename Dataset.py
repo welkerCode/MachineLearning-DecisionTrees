@@ -1,5 +1,5 @@
 import csv
-import xlrd
+#import xlrd
 
 
 
@@ -14,6 +14,7 @@ class Dataset:
         self.numAttributes = 0;
         self.attributeList = []
 
+    '''
     def parseDatasheet(self):
         workbook = xlrd.open_workbook(self.filename)
         worksheet = workbook.sheet_by_index(0)
@@ -25,6 +26,8 @@ class Dataset:
             self.exampleList.append(newExample)
         for attribute in self.exampleList[0].getAttributes():
             self.attributeList.append(Attributes())
+
+    '''
 
     # This function handles CSV files rather than xls
     # I learned to parse CSV files from: /home/welkert/Documents/school/machine_learning/MachineLearning-DecisionTrees/Datasets_in_homework_1/test.csv/home/welkert/Documents/school/machine_learning/MachineLearning-DecisionTrees/Datasets_in_homework_1/train.csv

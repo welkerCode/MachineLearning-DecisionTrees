@@ -1,8 +1,6 @@
 # I learned to parse workbooks with https://www.sitepoint.com/using-python-parse-spreadsheet-data/
 
 
-import xlrd
-
 class Attributes:
 
     def __init__(self):
