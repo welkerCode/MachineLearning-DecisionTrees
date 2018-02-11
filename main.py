@@ -23,7 +23,7 @@ def main(training_filename, test_filename, output_file, data_type):
         listOfErrors.insert(0,x)
         allDepthErrors[x] = listOfErrors
 
-    dataLabels = ["depth", "Info Gain Training Err", "Info Gain Testing Err", "Majority Error Training Err", "Majority Error Testing Err", "Average Training Err", "Average Testing Err", "Average Info Gain Err", "Average Majority Error Err", "Average Tree Depth Err"]
+    dataLabels = ["Tree Depth", "Info Gain Training Err", "Info Gain Testing Err", "Majority Error Training Err", "Majority Error Testing Err", "Average Training Err", "Average Testing Err", "Average Info Gain Err", "Average Majority Error Err", "Average Tree Depth Err"]
 
     with open(output_file, 'wb') as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
@@ -31,7 +31,7 @@ def main(training_filename, test_filename, output_file, data_type):
         for iteration in allDepthErrors:
             row = allDepthErrors[iteration]
             writer.writerow(row)
-    print "Done"
+    print "Done.  See the results in 'output.csv'..."
 
 def testTreeDepth(training_filename, test_filename, max_depth, data_type):
     # Create datasets for the training and testing files

@@ -1,4 +1,4 @@
-depth,Info Gain Training Err,Info Gain Testing Err,Majority Error Training Err,Majority Error Testing Err,Average Training Err,Average Testing Err,Average Info Gain Err,Average Majority Error Err,Average Tree Depth Err
+Tree Depth,Info Gain Training Err,Info Gain Testing Err,Majority Error Training Err,Majority Error Testing Err,Average Training Err,Average Testing Err,Average Info Gain Err,Average Majority Error Err,Average Tree Depth Err
 1,0.302,0.2967032967032967,0.302,0.2967032967032967,0.302,0.2967032967032967,0.29935164835164835,0.29935164835164835,0.29935164835164835
 2,0.222,0.22252747252747251,0.292,0.3131868131868132,0.257,0.26785714285714285,0.22226373626373624,0.3025934065934066,0.2624285714285714
 3,0.181,0.19642857142857142,0.206,0.21153846153846154,0.1935,0.20398351648351648,0.18871428571428572,0.20876923076923076,0.19874175824175824
